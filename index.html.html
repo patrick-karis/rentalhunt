@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RentHub</title>
+
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  /* Light theme (default) */
+  --bg-primary: #f5f7fb;
+  --bg-secondary: #ffffff;
+  --text-primary: #333333;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border-color: #e5e7eb;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --navbar-bg: #ffffff;
+  --navbar-text: #555555;
+  --card-bg: #ffffff;
+  --card-shadow: rgba(0, 0, 0, 0.05);
+  --button-primary: #2563eb;
+  --button-hover: #1e40af;
+  --price-bg: #2563eb;
+  --unlock-bg: #2563eb;
+  --unlock-hover: #1e40af;
+  --unlock-disabled: #10b981;
+  --modal-bg: rgba(0, 0, 0, 0.5);
+  --modal-content: #ffffff;
+}
+
+[data-theme="dark"] {
+  /* Dark theme */
+  --bg-primary: #0f0f23;
+  --bg-secondary: #1a1a2e;
+  --text-primary: #ffffff;
+  --text-secondary: #b8c5d6;
+  --text-muted: #6b7280;
+  --border-color: #2a2a3e;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --navbar-bg: #1a1a2e;
+  --navbar-text: #b8c5d6;
+  --card-bg: #1a1a2e;
+  --card-shadow: rgba(0, 0, 0, 0.2);
+  --button-primary: #3b82f6;
+  --button-hover: #2563eb;
+  --price-bg: #3b82f6;
+  --unlock-bg: #3b82f6;
+  --unlock-hover: #2563eb;
+  --unlock-disabled: #10b981;
+  --modal-bg: rgba(0, 0, 0, 0.7);
+  --modal-content: #1a1a2e;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 40px;
+  background: var(--navbar-bg);
+  box-shadow: 0 2px 10px var(--shadow-color);
+  transition: all 0.3s ease;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.navbar nav {
+  display: flex;
+  align-items: center;
+}
+
+.navbar nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: var(--navbar-text);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar nav a:hover {
+  color: var(--button-primary);
+}
+
+/* Dark Mode Toggle */
+.theme-toggle {
+  background: none;
+  border: 2px solid var(--border-color);
+  border-radius: 20px;
+  padding: 8px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 16px;
+  transition: all 0.3s ease;
+  margin-left: 20px;
+}
+
+.theme-toggle:hover {
+  border-color: var(--button-primary);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+.theme-toggle.dark {
+  background: var(--button-primary);
+  color: white;
+}
+
+/* Search bar */
+.search-bar {
+  background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+  padding: 40px 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.search-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg,
+    transparent 30%,
+    rgba(0, 255, 255, 0.1) 50%,
+    transparent 70%);
+  animation: neonSweep 3s ease-in-out infinite;
+}
+
+.search-container {
+  position: relative;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 16px 20px 16px 55px;
+  border-radius: 50px;
+  border: 2px solid #00ffff;
+  background: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
+  font-size: 16px;
+  outline: none;
+  box-shadow:
+    0 0 10px rgba(0, 255, 255, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.2),
+    0 0 30px rgba(0, 255, 255, 0.1),
+    inset 0 0 10px rgba(0, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.search-container input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+}
+
+.search-container input:focus {
+  border-color: #ff00ff;
+  box-shadow:
+    0 0 15px rgba(255, 0, 255, 0.5),
+    0 0 30px rgba(255, 0, 255, 0.3),
+    0 0 45px rgba(255, 0, 255, 0.2),
+    inset 0 0 15px rgba(255, 0, 255, 0.1);
+  animation: neonPulse 2s ease-in-out infinite;
+}
+
+.search-container input:not(:placeholder-shown) {
+  border-color: #00ffff;
+  box-shadow:
+    0 0 10px rgba(0, 255, 255, 0.4),
+    0 0 20px rgba(0, 255, 255, 0.2),
+    inset 0 0 10px rgba(0, 255, 255, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #00ffff;
+  z-index: 3;
+  filter: drop-shadow(0 0 5px #00ffff);
+  animation: iconGlow 2s ease-in-out infinite alternate;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.search-icon:hover {
+  color: #ff00ff;
+  filter: drop-shadow(0 0 8px #ff00ff);
+  transform: translateY(-50%) scale(1.1);
+}
+
+@keyframes neonSweep {
+  0%, 100% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 15px rgba(255, 0, 255, 0.5),
+      0 0 30px rgba(255, 0, 255, 0.3),
+      0 0 45px rgba(255, 0, 255, 0.2),
+      inset 0 0 15px rgba(255, 0, 255, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 0 20px rgba(255, 0, 255, 0.7),
+      0 0 40px rgba(255, 0, 255, 0.5),
+      0 0 60px rgba(255, 0, 255, 0.3),
+      inset 0 0 20px rgba(255, 0, 255, 0.2);
+  }
+}
+
+@keyframes iconGlow {
+  0% {
+    color: #00ffff;
+    filter: drop-shadow(0 0 5px #00ffff);
+  }
+  100% {
+    color: #ff00ff;
+    filter: drop-shadow(0 0 10px #ff00ff);
+  }
+}
+
+/* Filters */
+.filters {
+  padding: 20px 40px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.filters button {
+  padding: 8px 16px;
+  margin-right: 10px;
+  border-radius: 20px;
+  border: none;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+}
+
+.filters .active {
+  background: var(--button-primary);
+  color: white;
+  border-color: var(--button-primary);
+}
+
+/* Properties */
+.properties {
+  padding: 20px 40px 60px;
+}
+
+.properties h2 {
+  margin-bottom: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+/* Card */
+.card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 8px 20px var(--card-shadow);
+  transition: opacity 0.3s, transform 0.3s;
+  border: 1px solid var(--border-color);
+}
+
+.card.hidden {
+  display: none;
+}
+
+.card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.price {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: var(--price-bg);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.content {
+  padding: 18px;
+  color: var(--text-primary);
+}
+
+.content h3 {
+  margin-bottom: 6px;
+}
+
+.location {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.hostel-name {
+  font-size: 14px;
+  color: #2563eb;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.details {
+  display: flex;
+  gap: 12px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: var(--text-secondary);
+}
+
+.desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 15px;
+}
+
+.unlock {
+  width: 100%;
+  padding: 12px;
+  background: var(--unlock-bg);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.unlock:hover {
+  background: var(--unlock-hover);
+}
+
+.unlock:disabled {
+  background: var(--unlock-disabled);
+  cursor: not-allowed;
+}
+
+.unlock.processing {
+  background: #9333ea;
+  opacity: 0.8;
+}
+
+.payment-status {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  display: none;
+}
+
+.payment-status.success {
+  background: #f0fdf4;
+  color: #10b981;
+  display: block;
+}
+
+.payment-status.error {
+  background: #fee2e2;
+  color: #dc2626;
+  display: block;
+}
+
+.payment-status.processing {
+  background: #fef3c7;
+  color: #d97706;
+  display: block;
+}
+
+/* Contact Modal */
+.contact-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--modal-bg);
+  backdrop-filter: blur(4px);
+}
+
+.contact-modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-modal-content {
+  background: var(--modal-content);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 60px var(--shadow-color);
+  animation: slideIn 0.3s ease;
+  border: 1px solid var(--border-color);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.contact-modal-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.contact-modal-header h2 {
+  color: #2563eb;
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.contact-modal-header p {
+  color: #6b7280;
+  font-size: 16px;
+}
+
+.contact-info {
+  background: #f5f7fb;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 20px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.contact-item:last-child {
+  margin-bottom: 0;
+}
+
+.contact-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.contact-icon {
+  font-size: 32px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, #2563eb, #9333ea);
+  border-radius: 12px;
+  color: white;
+}
+
+.contact-details {
+  flex: 1;
+}
+
+.contact-details h3 {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.contact-details a {
+  font-size: 18px;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+  display: block;
+}
+
+.contact-details a:hover {
+  color: #9333ea;
+}
+
+.close-contact {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #999;
+  cursor: pointer;
+  border: none;
+  background: none;
+  line-height: 1;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.close-contact:hover {
+  color: #333;
+  background: #f5f7fb;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .search-bar {
+    padding: 25px 15px;
+  }
+
+  .search-container input {
+    font-size: 14px;
+    padding: 14px 18px 14px 50px;
+  }
+
+  .search-icon {
+    left: 18px;
+    font-size: 18px;
+  }
+}
+
+/* Image Modal Styles */
+.image-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(5px);
+}
+
+.image-modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-modal-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  animation: zoomIn 0.3s ease;
+}
+
+.image-modal-content img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.image-modal-close {
+  position: absolute;
+  top: -50px;
+  right: 0;
+  color: white;
+  font-size: 35px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.image-modal-close:hover {
+  color: #ff6b6b;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Make property images clickable */
+.card img {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.card img:hover {
+  transform: scale(1.05);
+}
+</style>
+</head>
+
+<body>
+
+<!-- Navbar -->
+<header class="navbar">
+  <div class="logo">🏠 RentHub</div>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">About</a>
+    <a href="TERMS.html">Terms</a>
+    <a href="ADMIN.html" style="color: #9333ea;">Admin</a>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+  </nav>
+</header>
+
+<!-- Search -->
+<section class="search-bar">
+  <div class="search-container">
+    <input type="text" id="propertySearch" placeholder="Search by location, hostel name, property type, or price...">
+    <span class="search-icon">🔍</span>
+  </div>
+</section>
+
+<!-- Filters -->
+<section class="filters">
+  <button class="active" data-filter="all">All</button>
+  <button data-filter="3000-3500">KSh 3,000 - 3,500</button>
+  <button data-filter="4500-7000">KSh 4,500 - 7,000</button>
+  <button data-filter="7000+">KSh 7,000+</button>
+</section>
+
+<!-- Properties -->
+<section class="properties">
+  <h2>Available Properties (<span id="propertyCount">5</span>)</h2>
+
+  <div class="grid" id="propertiesGrid">
+    <!-- Properties will be loaded dynamically -->
+  </div>
+</section>
+
+<!-- Contact Modal -->
+<div id="contactModal" class="contact-modal">
+  <div class="contact-modal-content" style="position: relative;">
+    <button class="close-contact" onclick="closeContactModal()">&times;</button>
+    <div class="contact-modal-header">
+      <h2>📞 Contact Us</h2>
+      <p>Get in touch with RentHub</p>
+    </div>
+    
+    <div class="contact-info">
+      <div class="contact-item">
+        <div class="contact-icon">📞</div>
+        <div class="contact-details">
+          <h3>Phone Number</h3>
+          <a href="tel:0769522695">0769522695</a>
+        </div>
+      </div>
+      
+      <div class="contact-item">
+        <div class="contact-icon">📧</div>
+        <div class="contact-details">
+          <h3>Email Address</h3>
+          <a href="mailto:renthub@gmail.com">renthub@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Image Modal -->
+<div id="imageModal" class="image-modal">
+  <div class="image-modal-content">
+    <span class="image-modal-close" onclick="closeImageModal()">&times;</span>
+    <img id="modalImage" src="" alt="Property Image">
+  </div>
+</div>
+
+<script>
+// ============================================
+// THEME TOGGLE FUNCTIONALITY
+// ============================================
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const themeToggle = document.getElementById('themeToggle');
+  
+  if (html.getAttribute('data-theme') === 'dark') {
+    html.removeAttribute('data-theme');
+    themeToggle.textContent = '🌙';
+    themeToggle.classList.remove('dark');
+    localStorage.setItem('theme', 'light');
+  } else {
+    html.setAttribute('data-theme', 'dark');
+    themeToggle.textContent = '☀️';
+    themeToggle.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
+  }
+}
+
+// Initialize theme on page load
+function initializeTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  const themeToggle = document.getElementById('themeToggle');
+  
+  if (savedTheme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeToggle.textContent = '☀️';
+    themeToggle.classList.add('dark');
+  } else {
+    themeToggle.textContent = '🌙';
+    themeToggle.classList.remove('dark');
+  }
+}
+
+// ============================================
+// DATABASE SYSTEM (LocalStorage)
+// ============================================
+
+const DB = {
+  // Initialize database with default data
+  init: function() {
+    if (!localStorage.getItem('renthub_properties')) {
+      const defaultProperties = [
+        {
+          id: 1,
+          title: "Single Room - Budget Friendly",
+          location: "Ngomongo, Near Kirinyaga University",
+          price: 3000,
+          size: 150,
+          image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=250&fit=crop",
+          description: "Affordable single room with free WiFi and water.",
+          contactPhone: "0712345678",
+          contactEmail: "landlord1@example.com",
+          status: "active",
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 2,
+          title: "Single Room Near School",
+          location: "Ngomongo, Near Kirinyaga University",
+          price: 3500,
+          size: 180,
+          image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=250&fit=crop",
+          description: "Safe and quiet neighborhood with free WiFi.",
+          contactPhone: "0712345679",
+          contactEmail: "landlord2@example.com",
+          status: "active",
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 3,
+          title: "Bedsitter - Modern",
+          location: "Diaspora, Near Kirinyaga University",
+          price: 4500,
+          baths: 1,
+          size: 250,
+          image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=250&fit=crop",
+          description: "Spacious bedsitter near shops and schools.",
+          contactPhone: "0712345680",
+          contactEmail: "landlord3@example.com",
+          status: "active",
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 4,
+          title: "Bedsitter - Premium",
+          location: "Mjini, Near Kirinyaga University",
+          price: 5500,
+          baths: 1,
+          size: 300,
+          image: "https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=400&h=250&fit=crop",
+          description: "Premium bedsitter with CCTV & security.",
+          contactPhone: "0712345681",
+          contactEmail: "landlord4@example.com",
+          status: "active",
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 5,
+          title: "One Bedroom Apartment - Luxury",
+          location: "Kerugoya Town, Near Market",
+          price: 8000,
+          baths: 1,
+          bedrooms: 1,
+          size: 450,
+          image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=250&fit=crop",
+          description: "Spacious one bedroom apartment with modern amenities, parking, and 24/7 security.",
+          contactPhone: "0712345682",
+          contactEmail: "landlord5@example.com",
+          status: "active",
+          createdAt: new Date().toISOString()
+        }
+      ];
+      localStorage.setItem('renthub_properties', JSON.stringify(defaultProperties));
+    }
+    
+    if (!localStorage.getItem('renthub_payments')) {
+      localStorage.setItem('renthub_payments', JSON.stringify([]));
+    }
+    
+    if (!localStorage.getItem('renthub_users')) {
+      localStorage.setItem('renthub_users', JSON.stringify([]));
+    }
+  },
+
+  // Properties CRUD
+  getProperties: function() {
+    return JSON.parse(localStorage.getItem('renthub_properties') || '[]');
+  },
+
+  getProperty: function(id) {
+    const properties = this.getProperties();
+    return properties.find(p => p.id === parseInt(id));
+  },
+
+  addProperty: function(property) {
+    const properties = this.getProperties();
+    const newId = properties.length > 0 ? Math.max(...properties.map(p => p.id)) + 1 : 1;
+    property.id = newId;
+    property.createdAt = new Date().toISOString();
+    property.status = property.status || 'active';
+    properties.push(property);
+    localStorage.setItem('renthub_properties', JSON.stringify(properties));
+    return property;
+  },
+
+  updateProperty: function(id, updates) {
+    const properties = this.getProperties();
+    const index = properties.findIndex(p => p.id === parseInt(id));
+    if (index !== -1) {
+      properties[index] = { ...properties[index], ...updates };
+      localStorage.setItem('renthub_properties', JSON.stringify(properties));
+      return properties[index];
+    }
+    return null;
+  },
+
+  deleteProperty: function(id) {
+    const properties = this.getProperties();
+    const filtered = properties.filter(p => p.id !== parseInt(id));
+    localStorage.setItem('renthub_properties', JSON.stringify(filtered));
+    return true;
+  },
+
+  // Payments CRUD
+  getPayments: function() {
+    return JSON.parse(localStorage.getItem('renthub_payments') || '[]');
+  },
+
+  addPayment: function(payment) {
+    const payments = this.getPayments();
+    payment.id = payments.length > 0 ? Math.max(...payments.map(p => p.id)) + 1 : 1;
+    payment.createdAt = new Date().toISOString();
+    payment.status = payment.status || 'pending';
+    payments.push(payment);
+    localStorage.setItem('renthub_payments', JSON.stringify(payments));
+    return payment;
+  },
+
+  updatePayment: function(id, updates) {
+    const payments = this.getPayments();
+    const index = payments.findIndex(p => p.id === parseInt(id));
+    if (index !== -1) {
+      payments[index] = { ...payments[index], ...updates };
+      localStorage.setItem('renthub_payments', JSON.stringify(payments));
+      return payments[index];
+    }
+    return null;
+  },
+
+  // Users CRUD
+  getUsers: function() {
+    return JSON.parse(localStorage.getItem('renthub_users') || '[]');
+  },
+
+  getUser: function(phoneNumber) {
+    const users = this.getUsers();
+    return users.find(u => u.phoneNumber === phoneNumber);
+  },
+
+  addUser: function(user) {
+    const users = this.getUsers();
+    const existingUser = this.getUser(user.phoneNumber);
+    if (existingUser) {
+      return existingUser;
+    }
+    user.id = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+    user.createdAt = new Date().toISOString();
+    user.propertiesViewed = user.propertiesViewed || [];
+    user.paymentsMade = user.paymentsMade || [];
+    user.totalSpent = user.totalSpent || 0;
+    users.push(user);
+    localStorage.setItem('renthub_users', JSON.stringify(users));
+    return user;
+  },
+
+  updateUser: function(phoneNumber, updates) {
+    const users = this.getUsers();
+    const index = users.findIndex(u => u.phoneNumber === phoneNumber);
+    if (index !== -1) {
+      users[index] = { ...users[index], ...updates };
+      localStorage.setItem('renthub_users', JSON.stringify(users));
+      return users[index];
+    }
+    return null;
+  },
+
+  // Statistics
+  getStats: function() {
+    const properties = this.getProperties();
+    const payments = this.getPayments();
+    const completedPayments = payments.filter(p => p.status === 'completed');
+    
+    return {
+      totalProperties: properties.length,
+      totalPayments: payments.length,
+      totalRevenue: completedPayments.reduce((sum, p) => sum + (p.amount || 0), 0),
+      pendingPayments: payments.filter(p => p.status === 'pending').length
+    };
+  }
+};
+
+// ============================================
+// PROPERTY RENDERING FUNCTIONS
+// ============================================
+
+function renderPropertyCard(property) {
+  const details = [];
+  
+  if (property.bedrooms) {
+    details.push(`<span>🛏️ ${property.bedrooms} Bed</span>`);
+  }
+  
+  if (property.baths) {
+    details.push(`<span>🛁 ${property.baths} Bath</span>`);
+  }
+  
+  details.push(`<span>📐 ${property.size} sqft</span>`);
+  
+  return `
+    <div class="card" data-price="${property.price}" data-property-id="${property.id}">
+      <img src="${property.image}" alt="${property.title}" onclick="openImageModal('${property.image}', '${property.title}')">
+      <span class="price">KSh ${property.price.toLocaleString()}/mo</span>
+      <div class="content">
+        <h3>${property.title}</h3>
+        <p class="location">📍 ${property.location}</p>
+        <div class="details">
+          ${details.join('')}
+        </div>
+        <p class="desc">${property.description}</p>
+        <button class="unlock" onclick="handleUnlockClick(${property.id}, this)">🔒 Unlock Contact (KSh 100)</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderProperties() {
+  const properties = DB.getProperties();
+  const activeProperties = properties.filter(p => p.status === 'active');
+  const grid = document.getElementById('propertiesGrid');
+  
+  if (activeProperties.length === 0) {
+    grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 2rem;">No properties available at the moment.</p>';
+  } else {
+    grid.innerHTML = activeProperties.map(property => renderPropertyCard(property)).join('');
+  }
+  
+  // Update property count
+  document.getElementById('propertyCount').textContent = activeProperties.length;
+  
+  // Re-initialize search and filters
+  initializeSearch();
+  initializeFilters();
+}
+
+function handleUnlockClick(propertyId, button) {
+  const property = DB.getProperty(propertyId);
+  if (!property) return;
+  
+  // Get the property card element
+  const propertyCard = button.closest('.card');
+  if (!propertyCard) return;
+  
+  // Check if user has already unlocked this property
+  const currentUserPhone = localStorage.getItem('currentUserPhone');
+  if (currentUserPhone) {
+    const user = DB.getUser(currentUserPhone);
+    if (user && user.propertiesBooked && user.propertiesBooked.includes(propertyId)) {
+      // User has already unlocked this property, show contact directly
+      showContactInfo(propertyCard, property);
+      return;
+    }
+  }
+  
+  // Initiate payment process
+  handleUnlockPayment(button, propertyCard);
+}
+
+function showContactInfo(propertyCard, property) {
+  // Update button to show unlocked state
+  const button = propertyCard.querySelector('.unlock');
+  if (button) {
+    button.textContent = "✅ Contact Unlocked";
+    button.style.background = "#10b981";
+    button.disabled = true;
+  }
+  
+  // Show contact details
+  const contactInfo = document.createElement("div");
+  contactInfo.style.marginTop = "10px";
+  contactInfo.style.padding = "10px";
+  contactInfo.style.background = "#f0fdf4";
+  contactInfo.style.borderRadius = "8px";
+  contactInfo.style.fontSize = "14px";
+  contactInfo.innerHTML = `
+    <strong>📞 Contact:</strong> ${property.contactPhone}<br>
+    <strong>📧 Email:</strong> ${property.contactEmail}
+  `;
+  propertyCard.querySelector(".content").appendChild(contactInfo);
+}
+
+// ============================================
+// IMAGE MODAL FUNCTIONS
+// ============================================
+
+function openImageModal(imageSrc, altText) {
+  const modal = document.getElementById('imageModal');
+  const modalImg = document.getElementById('modalImage');
+  
+  modalImg.src = imageSrc;
+  modalImg.alt = altText;
+  modal.classList.add('active');
+  
+  // Prevent body scrolling when modal is open
+  document.body.style.overflow = 'hidden';
+}
+
+function closeImageModal() {
+  const modal = document.getElementById('imageModal');
+  modal.classList.remove('active');
+  
+  // Restore body scrolling
+  document.body.style.overflow = 'auto';
+}
+
+// Close modal when clicking outside the image
+document.getElementById('imageModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeImageModal();
+  }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeImageModal();
+  }
+});
+
+// ============================================
+// SEARCH AND FILTER FUNCTIONS
+// ============================================
+
+function initializeSearch() {
+  const searchInput = document.getElementById('propertySearch');
+  const cards = document.querySelectorAll('.card');
+  
+  searchInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    
+    cards.forEach(card => {
+      const title = card.querySelector('h3').textContent.toLowerCase();
+      const location = card.querySelector('.location').textContent.toLowerCase();
+      const description = card.querySelector('.desc').textContent.toLowerCase();
+      
+      if (title.includes(searchTerm) || location.includes(searchTerm) || description.includes(searchTerm)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    
+    updateVisiblePropertyCount();
+  });
+}
+
+function initializeFilters() {
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  
+  filterButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      // Remove active class from all buttons
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      // Add active class to clicked button
+      this.classList.add('active');
+      
+      const filter = this.getAttribute('data-filter');
+      const cards = document.querySelectorAll('.card');
+      
+      cards.forEach(card => {
+        const price = parseInt(card.getAttribute('data-price'));
+        
+        if (filter === 'all') {
+          card.style.display = 'block';
+        } else if (filter === '3000-3500' && price >= 3000 && price <= 3500) {
+          card.style.display = 'block';
+        } else if (filter === '4500-7000' && price >= 4500 && price <= 7000) {
+          card.style.display = 'block';
+        } else if (filter === '7000+' && price >= 7000) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      
+      updateVisiblePropertyCount();
+    });
+  });
+}
+
+function updateVisiblePropertyCount() {
+  const visibleCards = document.querySelectorAll('.card[style*="display: block"], .card:not([style*="display"])');
+  // This function is already defined in the original code, so we'll keep it simple
+}
+
+// Initialize database on page load
+DB.init();
+
+// Update property count on page load
+document.addEventListener('DOMContentLoaded', function() {
+  // Render all properties dynamically
+  renderProperties();
+  
+  // Hide booked properties for the current user
+  hideBookedProperties();
+});
+
+// Function to hide properties that have been booked by the current user
+function hideBookedProperties() {
+  const currentUserPhone = localStorage.getItem('currentUserPhone');
+  if (!currentUserPhone) return;
+  
+  const user = DB.getUser(currentUserPhone);
+  if (!user || !user.propertiesBooked) return;
+  
+  const propertyCards = document.querySelectorAll('.card');
+  propertyCards.forEach(card => {
+    const propertyId = parseInt(card.getAttribute('data-property-id'));
+    if (user.propertiesBooked.includes(propertyId)) {
+      card.style.display = 'none';
+    }
+  });
+  
+  // Update property count after hiding booked properties
+  updateVisiblePropertyCount();
+}
+
+// Property Search Functionality
+document.getElementById('propertySearch').addEventListener('input', function() {
+  const searchTerm = this.value.toLowerCase().trim();
+  const propertyCards = document.querySelectorAll('.card');
+  let visibleCount = 0;
+
+  propertyCards.forEach(card => {
+    const title = card.querySelector('h3').textContent.toLowerCase();
+    const location = card.querySelector('.location').textContent.toLowerCase();
+    const price = card.querySelector('.price').textContent.toLowerCase();
+    const details = card.querySelector('.details').textContent.toLowerCase();
+
+    // Check if search term matches any of the property data
+    const matchesSearch = title.includes(searchTerm) ||
+                         location.includes(searchTerm) ||
+                         price.includes(searchTerm) ||
+                         details.includes(searchTerm) ||
+                         searchTerm === '';
+
+    if (matchesSearch) {
+      card.style.display = 'block';
+      visibleCount++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  // Update property count
+  const propertyCountElement = document.getElementById("propertyCount");
+  if (propertyCountElement) {
+    propertyCountElement.textContent = visibleCount;
+  }
+  
+  // Also update the global visible count function
+  updateVisiblePropertyCount();
+});
+
+// Clear search when clicking search icon
+document.querySelector('.search-icon').addEventListener('click', function() {
+  const searchInput = document.getElementById('propertySearch');
+  searchInput.value = '';
+  searchInput.focus();
+  
+  // Trigger input event to reset search
+  const event = new Event('input', { bubbles: true });
+  searchInput.dispatchEvent(event);
+});
+
+// Function to update the visible property count
+function updateVisiblePropertyCount() {
+  const visibleCards = document.querySelectorAll('.card[style*="display: block"], .card:not([style*="display: none"])');
+  let actualVisibleCount = 0;
+  
+  visibleCards.forEach(card => {
+    const computedStyle = window.getComputedStyle(card);
+    if (computedStyle.display !== 'none') {
+      actualVisibleCount++;
+    }
+  });
+  
+  const propertyCountElement = document.getElementById("propertyCount");
+  if (propertyCountElement) {
+    propertyCountElement.textContent = actualVisibleCount;
+  }
+}
+
+const filterButtons = document.querySelectorAll(".filters button");
+const propertyCountElement = document.getElementById("propertyCount");
+
+function filterProperties(filterValue) {
+  const propertyCards = document.querySelectorAll(".card");
+  let visibleCount = 0;
+  
+  propertyCards.forEach(card => {
+    const price = parseInt(card.getAttribute("data-price"));
+    let shouldShow = false;
+    
+    switch(filterValue) {
+      case "all":
+        shouldShow = true;
+        break;
+      case "3000-3500":
+        shouldShow = price >= 3000 && price <= 3500;
+        break;
+      case "4500-7000":
+        shouldShow = price >= 4500 && price <= 7000;
+        break;
+      case "7000+":
+        shouldShow = price >= 7000;
+        break;
+    }
+    
+    if (shouldShow) {
+      card.classList.remove("hidden");
+      visibleCount++;
+    } else {
+      card.classList.add("hidden");
+    }
+  });
+  
+  // Update property count
+  propertyCountElement.textContent = visibleCount;
+  
+  // Also update the global visible count function
+  updateVisiblePropertyCount();
+}
+
+// Filter button event listeners
+filterButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    // Update active state
+    filterButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    
+    // Filter properties
+    const filterValue = btn.getAttribute("data-filter");
+    filterProperties(filterValue);
+  });
+});
+
+// Format phone number to 254XXXXXXXXX
+function formatPhoneNumber(phone) {
+  let value = phone.replace(/\D/g, ""); // Remove non-digits
+  
+  if (value.startsWith("0")) {
+    value = "254" + value.substring(1);
+  } else if (!value.startsWith("254") && value.length > 0) {
+    value = "254" + value;
+  }
+  
+  if (value.length > 12) {
+    value = value.substring(0, 12);
+  }
+  
+  return value;
+}
+
+// M-Pesa STK Push function - Connect to your backend API
+async function initiateMpesaSTK(phoneNumber, amount, propertyCard) {
+  // Replace this URL with your actual backend API endpoint
+  const API_URL = 'YOUR_BACKEND_API/mpesa/stk-push'; // Update this!
+  
+  try {
+    // Uncomment this when you have your backend ready:
+    /*
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        phoneNumber: phoneNumber,
+        amount: amount,
+        accountReference: 'RENTAL_UNLOCK',
+        transactionDesc: 'RentHub Contact Unlock',
+        propertyId: propertyCard.dataset.propertyId || 'unknown'
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Payment request failed');
+    }
+    
+    return await response.json();
+    */
+    
+    // Demo simulation - Remove this when connecting to real API
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (Math.random() > 0.1) {
+          resolve({
+            success: true,
+            checkoutRequestID: "ws_CO_" + Date.now(),
+            message: "STK push sent successfully. Check your phone."
+          });
+        } else {
+          resolve({
+            success: false,
+            message: "Failed to send STK push. Please try again."
+          });
+        }
+      }, 1500);
+    });
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message || "Network error. Please check your connection."
+    };
+  }
+}
+
+// Handle unlock button click - Direct M-Pesa payment
+async function handleUnlockPayment(button, propertyCard) {
+  // Check if already unlocked
+  if (button.disabled) {
+    return;
+  }
+  
+  // Get or create status element
+  let statusElement = propertyCard.querySelector('.payment-status');
+  if (!statusElement) {
+    statusElement = document.createElement('div');
+    statusElement.className = 'payment-status';
+    propertyCard.querySelector('.content').appendChild(statusElement);
+  }
+  
+  // Prompt for phone number
+  const phoneInput = prompt("Enter your M-Pesa phone number (e.g., 0712345678 or 254712345678):");
+  
+  if (!phoneInput) {
+    return; // User cancelled
+  }
+  
+  const phoneNumber = formatPhoneNumber(phoneInput);
+  
+  // Validate phone number
+  if (phoneNumber.length !== 12 || !phoneNumber.startsWith("254")) {
+    statusElement.className = 'payment-status error';
+    statusElement.textContent = "❌ Invalid phone number. Please use format: 254XXXXXXXXX";
+    setTimeout(() => {
+      statusElement.style.display = 'none';
+    }, 5000);
+    return;
+  }
+  
+  // Update button state
+  button.classList.add('processing');
+  button.disabled = true;
+  button.textContent = "⏳ Processing...";
+  
+  // Show processing status
+  statusElement.className = 'payment-status processing';
+  statusElement.textContent = "📱 Sending M-Pesa STK push to " + phoneNumber + "...";
+  statusElement.style.display = 'block';
+  
+  try {
+    // Get property from database
+    const propertyPrice = parseInt(propertyCard.getAttribute("data-price"));
+    const propertyTitle = propertyCard.querySelector("h3").textContent;
+    const properties = DB.getProperties();
+    const property = properties.find(p => p.price === propertyPrice && p.title === propertyTitle) || null;
+    
+    // Initiate M-Pesa STK Push
+    const response = await initiateMpesaSTK(phoneNumber, 100, propertyCard);
+    
+    // Save payment to database
+    const payment = DB.addPayment({
+      transactionId: response.checkoutRequestID || "ws_CO_" + Date.now(),
+      propertyId: property ? property.id : null,
+      propertyTitle: property ? property.title : propertyTitle,
+      phoneNumber: phoneNumber,
+      amount: 100,
+      status: 'pending',
+      checkoutRequestID: response.checkoutRequestID
+    });
+    
+    // Add or update user
+    let user = DB.getUser(phoneNumber);
+    if (!user) {
+      user = DB.addUser({
+        phoneNumber: phoneNumber,
+        propertiesViewed: property ? [property.id] : [],
+        propertiesBooked: [],
+        paymentsMade: [payment.id],
+        totalSpent: 0
+      });
+    } else {
+      if (property && !user.propertiesViewed.includes(property.id)) {
+        user.propertiesViewed.push(property.id);
+      }
+      if (!user.paymentsMade.includes(payment.id)) {
+        user.paymentsMade.push(payment.id);
+      }
+      DB.updateUser(phoneNumber, user);
+    }
+    
+    if (response.success) {
+      // Show success message
+      statusElement.className = 'payment-status processing';
+      statusElement.textContent = "✅ STK push sent! Please check your phone and enter your M-Pesa PIN.";
+      
+      // Simulate waiting for payment confirmation
+      // In production, poll your backend for payment status
+      setTimeout(async () => {
+        // Check payment status (replace with actual API call)
+        // const paymentStatus = await checkPaymentStatus(response.checkoutRequestID);
+        
+        // For demo, simulate successful payment
+        const paymentStatus = { success: true };
+        
+        if (paymentStatus.success) {
+          // Store current user phone for future sessions
+          localStorage.setItem('currentUserPhone', phoneNumber);
+          
+          // Update payment status in database
+          DB.updatePayment(payment.id, { status: 'completed' });
+          
+          // Add property to user's booked properties
+          if (user && property) {
+            user.propertiesBooked = user.propertiesBooked || [];
+            if (!user.propertiesBooked.includes(property.id)) {
+              user.propertiesBooked.push(property.id);
+            }
+            DB.updateUser(phoneNumber, user);
+          }
+          
+          // Update user total spent
+          if (user) {
+            user.totalSpent = (user.totalSpent || 0) + 100;
+            DB.updateUser(phoneNumber, user);
+          }
+          
+          // Payment successful
+          button.classList.remove('processing');
+          button.textContent = "✅ Contact Unlocked";
+          button.style.background = "#10b981";
+          
+          // Play success sound
+          playSuccessSound();
+          
+          statusElement.className = 'payment-status success';
+          statusElement.textContent = "✅ Payment successful! Contact details unlocked.";
+          
+          // Hide the property card after successful booking
+          setTimeout(() => {
+            propertyCard.style.transition = "all 0.5s ease";
+            propertyCard.style.opacity = "0";
+            propertyCard.style.transform = "scale(0.95)";
+            setTimeout(() => {
+              propertyCard.style.display = "none";
+            }, 500);
+          }, 2000); // Wait 2 seconds so user can see the success message
+          
+          // Show contact details
+          showContactInfo(propertyCard, property);
+        } else {
+          throw new Error("Payment was not completed");
+        }
+      }, 5000);
+    } else {
+      throw new Error(response.message || "Payment failed");
+    }
+  } catch (error) {
+    // Payment failed
+    button.classList.remove('processing');
+    button.disabled = false;
+    button.textContent = "🔒 Unlock Contact (KSh 100)";
+    
+    statusElement.className = 'payment-status error';
+    statusElement.textContent = "❌ " + error.message;
+    
+    setTimeout(() => {
+      statusElement.style.display = 'none';
+    }, 5000);
+  }
+}
+
+// Connect all unlock buttons to M-Pesa payment
+const unlockButtons = document.querySelectorAll(".unlock");
+unlockButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const card = btn.closest(".card");
+    handleUnlockPayment(btn, card);
+  });
+});
+
+// Contact Modal Functions
+function openContactModal() {
+  const modal = document.getElementById("contactModal");
+  modal.classList.add("active");
+}
+
+function closeContactModal() {
+  const modal = document.getElementById("contactModal");
+  modal.classList.remove("active");
+}
+
+// Close modal when clicking outside
+document.getElementById("contactModal").addEventListener("click", (e) => {
+  if (e.target.id === "contactModal") {
+    closeContactModal();
+  }
+});
+
+// Connect About link to contact modal
+const navLinks = document.querySelectorAll('nav a');
+navLinks.forEach(link => {
+  if (link.textContent.trim() === "About") {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      openContactModal();
+    });
+  }
+});
+</script>
+
+<!-- Audio for payment success -->
+<script>
+// Function to play success sound
+function playSuccessSound() {
+  try {
+    // Create audio context
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Create oscillator for beep sound
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    // Connect nodes
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    // Configure sound
+    oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // 800Hz beep
+    oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.1); // Rise to 1000Hz
+    
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+    
+    // Play sound
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.3);
+  } catch (error) {
+    console.log('Audio not supported');
+  }
+}
+</script>
+
+</body>
+</html>
